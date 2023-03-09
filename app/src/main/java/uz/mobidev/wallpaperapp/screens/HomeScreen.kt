@@ -2,8 +2,9 @@ package uz.mobidev.wallpaperapp.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -44,7 +45,9 @@ fun HomeScreen(
       content = {
 
          Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+               .fillMaxSize()
+               .padding(horizontal = 8.dp),
             contentAlignment = Alignment.Center
          ) {
             if (state.isLoading) {
@@ -55,7 +58,11 @@ fun HomeScreen(
                Text(state.error!!)
             } else {
                // Show list of items
-               LazyColumn {
+               LazyVerticalGrid(
+                  columns = GridCells.Adaptive(minSize = 100.dp),
+                  verticalArrangement = Arrangement.spacedBy(8.dp),
+                  horizontalArrangement = Arrangement.spacedBy(8.dp)
+               ) {
                   items(state.wallpapers) {
                      ItemContent(item = it) {
                         // TODO: handle onCLick
@@ -80,8 +87,7 @@ fun ItemContent(item: WallpaperEntity, onCLick: () -> Unit) {
       contentScale = ContentScale.Crop,
       modifier = Modifier
          .fillMaxWidth()
-         .height(200.dp)
-         .padding(12.dp)
+         .fillMaxHeight()
          .clip(RoundedCornerShape(12.dp)),
    )
 }
