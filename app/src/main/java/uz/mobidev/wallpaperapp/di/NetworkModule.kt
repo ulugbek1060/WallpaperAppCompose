@@ -11,7 +11,8 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import uz.mobidev.wallpaperapp.data.Api
+import uz.mobidev.wallpaperapp.data.remote.ImageApi
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 const val BASE_URL = "https://api.unsplash.com"
@@ -43,14 +44,16 @@ object NetworkModule {
 
    @Provides
    @Singleton
-   fun provideApi(retrofit: Retrofit): Api {
-      return retrofit.create(Api::class.java)
+   fun provideApi(retrofit: Retrofit): ImageApi {
+      return retrofit.create(ImageApi::class.java)
    }
 
    @Singleton
    @Provides
    fun provideClient(): OkHttpClient {
       return OkHttpClient.Builder()
+         .readTimeout(15, TimeUnit.SECONDS)
+         .connectTimeout(15, TimeUnit.SECONDS)
          .addInterceptor(createInterceptor())
          .addInterceptor(createLoggingInterceptor())
          .build()
@@ -68,5 +71,4 @@ object NetworkModule {
       return HttpLoggingInterceptor()
          .setLevel(HttpLoggingInterceptor.Level.BODY)
    }
-
 }

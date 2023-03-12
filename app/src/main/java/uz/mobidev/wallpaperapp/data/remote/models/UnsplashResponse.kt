@@ -1,4 +1,4 @@
-package uz.mobidev.wallpaperapp.data.models
+package uz.mobidev.wallpaperapp.data.remote.models
 
 data class UnsplashResponse(
    val color: String,

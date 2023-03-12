@@ -1,14 +1,14 @@
 package uz.mobidev.wallpaperapp.domain
 
+import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
-import uz.mobidev.wallpaperapp.data.ResponseState
-import uz.mobidev.wallpaperapp.domain.models.WallpaperEntity
+import uz.mobidev.wallpaperapp.data.database.entity.image.ImagesEntity
 
 interface Repository {
 
    /**
     * Fetch wallpaper
     */
-   fun getWallpapers(): Flow<ResponseState<List<WallpaperEntity>>>
+   fun getImages(): Flow<PagingData<ImagesEntity>>
 
 }
