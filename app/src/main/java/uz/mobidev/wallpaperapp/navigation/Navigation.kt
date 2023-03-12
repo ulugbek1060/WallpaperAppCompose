@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import uz.mobidev.wallpaperapp.screens.DetailScreen
 import uz.mobidev.wallpaperapp.screens.HomeScreen
+import uz.mobidev.wallpaperapp.screens.SearchScreen
 
 const val IMAGE_FULL_URL = "image_full_url"
 
@@ -30,6 +31,10 @@ fun SetupNavGraph(navController: NavHostController) {
       composable(
          route = Screens.Home.route,
          content = { HomeScreen(navController = navController) }
+      )
+      composable(
+         route = Screens.Search.route,
+         content = { SearchScreen(navController = navController) }
       )
       composable(
          route = Screens.Detail.route,

@@ -9,6 +9,8 @@ interface Repository {
    /**
     * Fetch wallpaper
     */
-   fun getImages(): Flow<PagingData<ImagesEntity>>
+   fun getImages(): Flow<PagingData<ImageModel>>
+
+   fun getImagesByQuery(query: String?): Flow<PagingData<ImageModel>>
 
 }

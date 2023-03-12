@@ -13,7 +13,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import uz.mobidev.wallpaperapp.navigation.Screens
+import uz.mobidev.wallpaperapp.ui.theme.statusBarColor
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -23,6 +25,12 @@ fun HomeScreen(
    navController: NavHostController = rememberNavController(),
    viewModel: HomeViewModel = hiltViewModel()
 ) {
+
+   val systemUiController = rememberSystemUiController()
+   systemUiController.setStatusBarColor(
+      color = MaterialTheme.colors.statusBarColor
+   )
+
    Scaffold(
       topBar = {
          TopAppBar(

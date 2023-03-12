@@ -22,8 +22,3 @@ class DetailViewModel @Inject constructor(
       imageUrl.value = url
    }
 }
-
-data class DetailUiState(
-   val isLoading: Boolean,
-   val fullUrl: String
-)

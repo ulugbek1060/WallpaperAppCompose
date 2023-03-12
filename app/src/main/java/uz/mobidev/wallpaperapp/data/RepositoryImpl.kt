@@ -1,15 +1,15 @@
 package uz.mobidev.wallpaperapp.data
 
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
+import androidx.paging.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import uz.mobidev.wallpaperapp.data.database.dao.ImagesDao
 import uz.mobidev.wallpaperapp.data.database.dao.RemoteKeysDao
-import uz.mobidev.wallpaperapp.data.database.entity.image.ImagesEntity
+import uz.mobidev.wallpaperapp.data.paging.DataLoader
+import uz.mobidev.wallpaperapp.data.paging.ImagePageSource
 import uz.mobidev.wallpaperapp.data.paging.ImageRemoteMediator
 import uz.mobidev.wallpaperapp.data.remote.ImageApi
+import uz.mobidev.wallpaperapp.domain.ImageModel
 import uz.mobidev.wallpaperapp.domain.Repository
 import javax.inject.Inject
 
@@ -21,22 +21,47 @@ class RepositoryImpl @Inject constructor(
 ) : Repository {
 
    @OptIn(ExperimentalPagingApi::class)
-   override fun getImages(): Flow<PagingData<ImagesEntity>> {
+   override fun getImages(): Flow<PagingData<ImageModel>> {
       val pagingSourceFactory = { imagesDao.getAllImages() }
       return Pager(
          config = PagingConfig(
-            pageSize = 10,
+            pageSize = DEFAULT_PAGE_SIZE,
          ),
          remoteMediator = ImageRemoteMediator(
             imageApi = imageApi,
             remoteKeysDao = remoteKeysDao,
             imagesDao = imagesDao
-         ),
-         pagingSourceFactory = pagingSourceFactory
+         ), pagingSourceFactory = pagingSourceFactory
       )
          .flow
+         .map { pagingData ->
+            pagingData.map { launchRoomEntity ->
+               ImageModel.fromLocal(launchRoomEntity)
+            }
+         }
    }
 
+   override fun getImagesByQuery(query: String?): Flow<PagingData<ImageModel>> {
+
+      val loader: DataLoader<ImageModel> = {
+         imageApi.searchPhotos(query = query, page = it, DEFAULT_PAGE_SIZE).map { response ->
+            ImageModel.fromResponse(response = response)
+         }
+      }
+      return Pager(
+         config = PagingConfig(
+            pageSize = DEFAULT_PAGE_SIZE, enablePlaceholders = false
+         ),
+         pagingSourceFactory = {
+            ImagePageSource(loader, DEFAULT_PAGE_SIZE)
+         }
+      ).flow
+
+   }
+
+   companion object {
+      const val DEFAULT_PAGE_SIZE = 10
+   }
 }
 
 //fun <T> Flow<T>.asResponseState(): Flow<ResponseState<T>> =
